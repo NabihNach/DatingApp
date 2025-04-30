@@ -1,5 +1,8 @@
+using System.Text;
 using DatingApp.API.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
 
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(
@@ -26,6 +30,20 @@ builder.Services.AddCors(options =>
   );
 });
 
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Token"]);
+builder.Services
+  .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+  .AddJwtBearer(options =>
+  {
+      options.TokenValidationParameters = new TokenValidationParameters
+      {
+          ValidateIssuerSigningKey = true,
+          IssuerSigningKey = new SymmetricSecurityKey(key),
+          ValidateIssuer = false,
+          ValidateAudience = false
+      };
+  });
 
 var app = builder.Build();
 
@@ -60,6 +78,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAngularDevClient");
 
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
