@@ -1,13 +1,15 @@
-import { Injectable } from "@angular/core";
+// src/app/_services/error.interceptor.ts
+import { Injectable } from '@angular/core';
 import {
-  HTTP_INTERCEPTORS,
-  HttpErrorResponse,
-  HttpEvent,
-  HttpHandler,
   HttpInterceptor,
-  HttpRequest
-} from "@angular/common/http";
-import { catchError, Observable, throwError } from "rxjs";
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpErrorResponse,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -17,40 +19,30 @@ export class ErrorInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        // 401 Unauthorized
+        let message: string = 'Server Error';
+
         if (error.status === 401) {
-          return throwError(() => new Error(error.statusText));
-        }
-
-        // Application-level custom error header
-        const applicationError = error.headers.get("Application-Error");
-        if (applicationError) {
-          return throwError(() => new Error(applicationError));
-        }
-
-        // Model state errors in response body
-        let modalStateErrors = "";
-        const serverError = error.error;
-        if (
-          serverError &&
-          typeof serverError === "object" &&
-          serverError.errors
-        ) {
-          for (const key in serverError.errors) {
-            if (serverError.errors[key]) {
-              modalStateErrors += serverError.errors[key] + "\n";
-            }
+          message = 'Unauthorized';
+        } else {
+          const appErr = error.headers.get('Application-Error');
+          if (appErr) {
+            message = appErr;
+          } else if (error.error?.errors && typeof error.error.errors === 'object') {
+            // e.g. validation errors in a dictionary
+            message = Object
+              .values(error.error.errors)
+              .flat()
+              .join('\n');
+          } else if (error.error) {
+            // some API return a string message
+            message = typeof error.error === 'string'
+              ? error.error
+              : JSON.stringify(error.error);
           }
         }
 
-        // Fallback error message
-        const message =
-          modalStateErrors ||
-          serverError?.message ||
-          serverError ||
-          "Server Error";
-
-        return throwError(() => new Error(message));
+        // re‑throw just the string message:
+        return throwError(() => message);
       })
     );
   }
@@ -59,5 +51,5 @@ export class ErrorInterceptor implements HttpInterceptor {
 export const ErrorInterceptorProvider = {
   provide: HTTP_INTERCEPTORS,
   useClass: ErrorInterceptor,
-  multi: true
+  multi: true,
 };

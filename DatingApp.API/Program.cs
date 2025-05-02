@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text;
 using DatingApp.API.Data;
 using DatingApp.API.Helpers;
@@ -38,38 +39,42 @@ builder.Services
   .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
   .AddJwtBearer(options =>
   {
-      options.TokenValidationParameters = new TokenValidationParameters
-      {
-          ValidateIssuerSigningKey = true,
-          IssuerSigningKey = new SymmetricSecurityKey(key),
-          ValidateIssuer = false,
-          ValidateAudience = false
-      };
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+      ValidateIssuerSigningKey = true,
+      IssuerSigningKey = new SymmetricSecurityKey(key),
+      ValidateIssuer = false,
+      ValidateAudience = false
+    };
   });
 
 var app = builder.Build();
 
-app.UseExceptionHandler(errorApp =>
-{
-    errorApp.Run(async context =>
-    {
-        context.Response.StatusCode = 500;
-        context.Response.ContentType = "application/json";
 
-        var error = context.Features.Get<IExceptionHandlerFeature>();
-        if (error != null)
-        {
-            context.Response.AddApplicationError(error.Error.Message);
-            await context.Response.WriteAsync(error.Error.Message);
-        }
-    });
-});
 
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
   app.MapOpenApi();
+}
+else
+{
+  app.UseExceptionHandler(errorApp =>
+  {
+    errorApp.Run(async context =>
+    {
+      context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+      context.Response.ContentType = "application/json";
+
+      var error = context.Features.Get<IExceptionHandlerFeature>();
+      if (error != null)
+      {
+        context.Response.AddApplicationError(error.Error.Message);
+        await context.Response.WriteAsync(error.Error.Message);
+      }
+    });
+  });
 }
 
 
