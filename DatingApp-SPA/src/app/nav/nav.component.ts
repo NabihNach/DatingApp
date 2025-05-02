@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../_services/auth.service';
 import { CommonModule } from '@angular/common';
 import { AlertifyService } from '../_services/alertify.service';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 @Component({
   selector: 'app-nav',
@@ -11,13 +12,14 @@ import { AlertifyService } from '../_services/alertify.service';
   standalone: true,
   imports: [
     FormsModule,
-    CommonModule
+    CommonModule,
+    BsDropdownModule  
   ] 
 })
 export class NavComponent implements OnInit {
   model: any ={};
 
-  constructor(private authService: AuthService, private alertify: AlertifyService) { }
+  constructor(public authService: AuthService, private alertify: AlertifyService) { }
 
   ngOnInit() {
   }
@@ -31,8 +33,7 @@ export class NavComponent implements OnInit {
   }
 
   loggedIn(){
-    const token = localStorage.getItem('token');
-    return !!token;
+    return this.authService.loggedIn();
   }
 
   logout(){

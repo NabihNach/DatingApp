@@ -1,4 +1,3 @@
-// src/app/_services/error.interceptor.ts
 import { Injectable } from '@angular/core';
 import {
   HttpInterceptor,
@@ -28,20 +27,16 @@ export class ErrorInterceptor implements HttpInterceptor {
           if (appErr) {
             message = appErr;
           } else if (error.error?.errors && typeof error.error.errors === 'object') {
-            // e.g. validation errors in a dictionary
             message = Object
               .values(error.error.errors)
               .flat()
               .join('\n');
           } else if (error.error) {
-            // some API return a string message
             message = typeof error.error === 'string'
               ? error.error
               : JSON.stringify(error.error);
           }
         }
-
-        // re‑throw just the string message:
         return throwError(() => message);
       })
     );
