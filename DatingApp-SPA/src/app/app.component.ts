@@ -9,6 +9,7 @@ import { BsDropdownModule }       from 'ngx-bootstrap/dropdown';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [RouterOutlet, NavComponent, FormsModule, HomeComponent, BsDropdownModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
