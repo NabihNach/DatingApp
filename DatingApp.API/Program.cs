@@ -34,6 +34,8 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IDatingRepository, DatingRepository>();
+
 var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Token"]);
 builder.Services
   .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -47,11 +49,29 @@ builder.Services
       ValidateAudience = false
     };
   });
+builder.Services.AddAutoMapper(typeof(DatingRepository).Assembly);
 
 var app = builder.Build();
 
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<DataContext>();
+        // Apply any pending migrations
+        context.Database.Migrate();
 
+        // Run your seeding logic
+        Seed.SeedUsers(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred during migration/seeding");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
