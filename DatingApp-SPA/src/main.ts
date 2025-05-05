@@ -1,9 +1,11 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
-import { BsDropdownModule }            from 'ngx-bootstrap/dropdown';
-import { BrowserAnimationsModule }     from '@angular/platform-browser/animations';
+import { appConfig } from './app/app.config';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { importProvidersFrom } from '@angular/core';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { NgxGalleryModule} from '@kolkov/ngx-gallery';
 
 bootstrapApplication(AppComponent, {
   ...appConfig,
@@ -11,7 +13,9 @@ bootstrapApplication(AppComponent, {
     ...appConfig.providers,
     importProvidersFrom(
       BrowserAnimationsModule,
-      BsDropdownModule.forRoot()
+      BsDropdownModule.forRoot(),
+      TabsModule.forRoot(),
+      NgxGalleryModule,
     )
   ]
 }).catch(err => console.error(err));
