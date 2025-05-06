@@ -11,6 +11,7 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(withInterceptorsFromDi()),
     AuthService,
     ErrorInterceptor,
-    RouterModule // Ensure RouterModule is provided
+    RouterModule,
+     // Ensure RouterModule is provided
   ]
 });
