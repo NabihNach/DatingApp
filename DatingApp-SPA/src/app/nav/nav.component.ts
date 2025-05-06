@@ -1,39 +1,58 @@
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';  // Make sure FormsModule is imported here
 import { AuthService } from '../_services/auth.service';
-import { CommonModule } from '@angular/common';
+import { TitleCasePipe,NgIf } from '@angular/common'; // ✅ Import NgIf
+import { AlertifyService } from '../_services/alertify.service';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { Router, RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.css']
+  styleUrls: ['./nav.component.css'],
+  imports: [FormsModule,TitleCasePipe,NgIf,BsDropdownModule,RouterModule],  
 })
+
 export class NavComponent implements OnInit {
+  model: any = {};
+  errorMessage: string ='';
 
-  model: any={};
+  constructor(public authService: AuthService,
+    private cdRef: ChangeDetectorRef,
+    private alertify: AlertifyService,
+    private router: Router
+  ) {}
 
-
-  constructor(private authService: AuthService) { }
-
-  ngOnInit() {
+  ngOnInit() {}
+  login() {
+    this.authService.login(this.model).subscribe({
+      next: () => {
+        this.errorMessage = '';
+        this.alertify.success('Logging in successfully');
+      },
+      error: (err: any) => {
+        this.errorMessage = err.message;
+        this.alertify.error(err);
+      },
+      complete: () => {
+        this.router.navigate(['/members']);
+      }
+    });
+  
+  
   }
-  login(){
-    this.authService.login(this.model).subscribe(next => {
-      console.log('Logged in successfully')
-    }, error => {
-      console.log(error)
-    })
+  
+  loggedIn(): boolean {
+    // const token = localStorage.getItem('token');
+    // return !!token;
+    return this.authService.loggedIn();
   }
-
-  loggedIn(){
-    const token = localStorage.getItem('token');
-    return !!token;
-  }
-
+  
   logout(){
-    localStorage.removeItem('token')
-    console.log('logged out');
-  }
-
+    localStorage.removeItem('token');
+    this.cdRef.detectChanges();
+    this.alertify.message('Logged out');
+    this.router.navigate(['/home']);
+  }
 }

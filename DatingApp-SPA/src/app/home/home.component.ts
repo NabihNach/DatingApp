@@ -7,6 +7,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
+  standalone: true,
   imports: [RegisterComponent, CommonModule]
 })
 export class HomeComponent implements OnInit {
