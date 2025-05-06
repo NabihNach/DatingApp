@@ -1,28 +1,33 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {JwtHelperService} from '@auth0/angular-jwt';
-import { NavComponent } from "./nav/nav.component";
-import { HomeComponent } from "./home/home.component";
+import { NavComponent } from './nav/nav.component';
+import { FormsModule } from '@angular/forms';
+import { HomeComponent } from './home/home.component';
 import { AuthService } from './_services/auth.service';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 @Component({
   selector: 'app-root',
-  imports: [ NavComponent, HomeComponent],
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    NavComponent,
+    FormsModule,
+    BsDropdownModule,
+  ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
-  standalone: true
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  [x: string]: any;
   jwtHelper = new JwtHelperService();
-  constructor(private authService: AuthService){}
 
-  ngOnInit(){
+  constructor(private authService: AuthService) {}
+
+  ngOnInit(): void {
     const token = localStorage.getItem('token');
-    if(token){
+    if (token) {
       this.authService.decodedToken = this.jwtHelper.decodeToken(token);
     }
   }
-
-
 }
