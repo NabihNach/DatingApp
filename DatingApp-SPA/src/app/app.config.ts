@@ -6,10 +6,11 @@ import { JwtModule, JWT_OPTIONS }                                            fro
 import { routes }                    from './app.routes';
 import { ErrorInterceptorProvider }  from './_services/error.interceptor';
 import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
-import { MemberListResolver } from './_resolvers/member-list.resolver copy';
+import { MemberListResolver } from './_resolvers/member-list.resolver';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { CustomHammerConfig } from '@kolkov/ngx-gallery';
+import { MemberEditResolver } from './_resolvers/member-edit.resolver';
 
 
 export function tokenGetter(): string | null {
@@ -20,6 +21,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideAnimations(),
     { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig },
+    MemberEditResolver,
     MemberListResolver,
     MemberDetailResolver,
     provideZoneChangeDetection({ eventCoalescing: true }),
