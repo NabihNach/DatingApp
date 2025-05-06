@@ -43,8 +43,11 @@
       <p>{{user.interest}}</p>
     </tab>
     <tab heading="Photos">
-      <div *ngIf="galleryImages.length === 0">No photos available</div>
-      <ngx-gallery *ngIf="galleryImages.length > 0" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+      <ngx-gallery
+    [options]="galleryOptions"
+    [images]="galleryImages"
+    class="ngx-gallery">
+  </ngx-gallery>
     </tab>
     <tab heading="Messages">
       <p>Messages will go here</p>

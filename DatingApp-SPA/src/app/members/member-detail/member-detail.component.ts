@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TabsModule } from 'ngx-bootstrap/tabs';
-import { NgxGalleryModule, NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@kolkov/ngx-gallery';
+import {
+  NgxGalleryModule,
+  NgxGalleryOptions,
+  NgxGalleryImage,
+  NgxGalleryAnimation
+} from '@kolkov/ngx-gallery';
 import { ActivatedRoute } from '@angular/router';
 import { User } from '../../_models/user';
 import { AlertifyService } from '../../_services/alertify.service';
@@ -19,8 +24,8 @@ import { AlertifyService } from '../../_services/alertify.service';
 })
 export class MemberDetailComponent implements OnInit {
   user!: User;
-  galleryOptions: NgxGalleryOptions[] = [];
-  galleryImages: NgxGalleryImage[] = [];
+  galleryOptions!: NgxGalleryOptions[];
+  galleryImages!: NgxGalleryImage[];
 
   constructor(
     private route: ActivatedRoute,
@@ -28,17 +33,14 @@ export class MemberDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Initialize gallery options
-    this.galleryOptions = [
-      {
-        width: '500px',
-        height: '500px',
-        imagePercent: 100,
-        thumbnailsColumns: 4,
-        imageAnimation: NgxGalleryAnimation.Slide,
-        preview: false
-      }
-    ];
+    this.galleryOptions = [{
+      width: '500px',
+      height: '500px',
+      imagePercent: 100,
+      thumbnailsColumns: 4,
+      imageAnimation: NgxGalleryAnimation.Slide,
+      preview: false
+    }];
 
     // Get resolved user data and setup images
     this.route.data.subscribe({

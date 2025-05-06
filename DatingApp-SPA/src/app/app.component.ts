@@ -14,7 +14,6 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
     RouterOutlet,
     NavComponent,
     FormsModule,
-    HomeComponent,
     BsDropdownModule,
   ],
   templateUrl: './app.component.html',
