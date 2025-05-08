@@ -6,6 +6,9 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AlertifyService } from '../../_services/alertify.service';
+import { UserService } from '../../_services/user.service';
+import { AuthService } from '../../_services/auth.service';
+import { PhotoEditorComponent } from "../photo-editor/photo-editor.component";
 
 @Component({
   selector: 'app-member-edit',
@@ -16,8 +19,9 @@ import { AlertifyService } from '../../_services/alertify.service';
     FormsModule,
     CommonModule,
     TabsModule,
-    NgxGalleryModule 
-  ],
+    NgxGalleryModule,
+    PhotoEditorComponent
+],
 })
 export class MemberEditComponent implements OnInit {
   @ViewChild('editForm') editForm!:NgForm;
@@ -28,7 +32,8 @@ export class MemberEditComponent implements OnInit {
     }
   }
   user!: User;
-  constructor(private route: ActivatedRoute, private alertify: AlertifyService) { }
+  constructor(private route: ActivatedRoute, private alertify: AlertifyService,
+     private userService: UserService, private authService: AuthService) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
@@ -37,9 +42,14 @@ export class MemberEditComponent implements OnInit {
   }
 
   updateUser(){
-    console.log(this.user);
-    this.alertify.success('Profile updated successfully')
-    this.editForm.reset(this.user);
+    console.log('Sending to server:', this.user);
+    this.userService.updateUser(this.authService.decodedToken.nameid, this.user).subscribe(next => {
+      this.alertify.success('Profile updated successfully')
+      this.editForm.reset(this.user);
+    }, error => {
+      this.alertify.error(error);
+    });
+   
   }
 
 }

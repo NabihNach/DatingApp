@@ -49,8 +49,9 @@ builder.Services
       ValidateAudience = false
     };
   });
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 builder.Services.AddAutoMapper(typeof(DatingRepository).Assembly);
-
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 var app = builder.Build();
 
 
