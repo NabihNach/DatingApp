@@ -4,21 +4,23 @@ import * as alertify from 'alertifyjs';
 @Injectable({
   providedIn: 'root'
 })
+
 export class AlertifyService {
 
 constructor() { }
 
 confirm(message: string, okCallback: () => any){
-  alertify.confirm(message,(e: any)=>{
-    if (e){
+  alertify.confirm(message,(e:any)=>{
+    if(e){
       okCallback();
-    } else{}
+    }else{}
   });
 }
 
 success(message: string){
   alertify.success(message);
 }
+
 
 error(message: string){
   alertify.error(message);
@@ -31,5 +33,4 @@ warning(message: string){
 message(message: string){
   alertify.message(message);
 }
-
 }

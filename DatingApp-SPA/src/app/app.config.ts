@@ -1,45 +1,49 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter }                                                    from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi }                           from '@angular/common/http';
-import { JwtModule, JWT_OPTIONS }                                            from '@auth0/angular-jwt';
-
-import { routes }                    from './app.routes';
-import { ErrorInterceptorProvider }  from './_services/error.interceptor';
-import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
-import { MemberListResolver } from './_resolvers/member-list.resolver';
+import { ApplicationConfig, importProvidersFrom, Injectable, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
+import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { ErrorInterceptorProvider } from './_services/error.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
-import { CustomHammerConfig } from '@kolkov/ngx-gallery';
-import { MemberEditResolver } from './_resolvers/member-edit.resolver';
+import { JWT_OPTIONS, JwtModule } from '@auth0/angular-jwt';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { HAMMER_GESTURE_CONFIG, HammerGestureConfig } from '@angular/platform-browser';
+import { FileUploadModule } from 'ng2-file-upload';
 
-
-export function tokenGetter(): string | null {
+export function tokenGetter(){
   return localStorage.getItem('token');
+}
+@Injectable()
+export class CustomHammerConfig extends HammerGestureConfig{
+  override overrides = {
+    pinch: {enable: false},
+    rotate: { enable: false}
+  };
 }
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideAnimations(),
-    { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig },
-    MemberEditResolver,
-    MemberListResolver,
-    MemberDetailResolver,
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
     ErrorInterceptorProvider,
+    provideAnimations(),
+    FileUploadModule,
     importProvidersFrom(
       JwtModule.forRoot({
-        jwtOptionsProvider: {
+        jwtOptionsProvider:{
           provide: JWT_OPTIONS,
-          useFactory: () => ({
+          useFactory:() => ({
             tokenGetter,
-            allowedDomains: ['localhost:5235'],
-            disallowedRoutes: ['http://localhost:5235/api/auth']
+            allowedDomains:['localhost:5011'],
+            disallowedRoutes: ['http://localhost:5011/api/auth']
           }),
-          deps: []
+          deps:[]
         }
       })
-    )
-  ]
+    ),
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: CustomHammerConfig
+    },
+    ],
 };

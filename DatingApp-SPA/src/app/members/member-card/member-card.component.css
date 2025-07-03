@@ -17,18 +17,19 @@
 }
 
 .member-icons{
-    position:absolute;
-    bottom: -30%;
-    left: 0;
-    right: 0;
-    margin-right: auto;
-    margin-left:auto;
-    opacity:0;
+    position: absolute;
+    bottom:-30%;
+    left:0;
+    right:0;
+    margin-right:auto;
+    margin-left: auto;
+    opacity: 0;
+
 }
 
 .card-img-wrapper:hover .member-icons{
     bottom:0;
-    opacity: 1;
+    opacity:1;
 }
 
 .animate{

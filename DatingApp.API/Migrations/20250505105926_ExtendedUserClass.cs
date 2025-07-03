@@ -47,7 +47,7 @@ namespace DatingApp.API.Migrations
                 defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
-                name: "Interest",
+                name: "Interests",
                 table: "Users",
                 type: "nvarchar(max)",
                 nullable: false,
@@ -55,6 +55,13 @@ namespace DatingApp.API.Migrations
 
             migrationBuilder.AddColumn<string>(
                 name: "Introduction",
+                table: "Users",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "KnownAs",
                 table: "Users",
                 type: "nvarchar(max)",
                 nullable: false,
@@ -69,13 +76,6 @@ namespace DatingApp.API.Migrations
 
             migrationBuilder.AddColumn<string>(
                 name: "LookingFor",
-                table: "Users",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddColumn<string>(
-                name: "knownAs",
                 table: "Users",
                 type: "nvarchar(max)",
                 nullable: false,
@@ -137,11 +137,15 @@ namespace DatingApp.API.Migrations
                 table: "Users");
 
             migrationBuilder.DropColumn(
-                name: "Interest",
+                name: "Interests",
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "Introduction",
+                table: "Users");
+
+            migrationBuilder.DropColumn(
+                name: "KnownAs",
                 table: "Users");
 
             migrationBuilder.DropColumn(
@@ -150,10 +154,6 @@ namespace DatingApp.API.Migrations
 
             migrationBuilder.DropColumn(
                 name: "LookingFor",
-                table: "Users");
-
-            migrationBuilder.DropColumn(
-                name: "knownAs",
                 table: "Users");
         }
     }
